@@ -1,0 +1,79 @@
+<mxfile host="app.diagrams.net" modified="2026-02-18T15:55:00.000Z" agent="Antigravity AI" version="21.1.2">
+  <diagram id="RAG_Architecture" name="Full Stack RAG Design">
+    <mxGraphModel dx="1293" dy="728" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Frontend -->
+        <mxCell id="fe_box" value="Frontend (WASM)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="200" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="leptos" value="Leptos (WASM)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" vertex="1" parent="fe_box">
+          <mxGeometry x="20" y="50" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="admin_ui" value="Admin Panel (Leapos style)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" vertex="1" parent="fe_box">
+          <mxGeometry x="20" y="100" width="160" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Backend -->
+        <mxCell id="be_box" value="Backend (Rust)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="320" y="40" width="240" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="axum" value="Axum API Server" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="be_box">
+          <mxGeometry x="40" y="40" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="rig" value="Rig RAG Framework" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="be_box">
+          <mxGeometry x="40" y="90" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="sqlx" value="SQLx (Type-safe DB Client)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="be_box">
+          <mxGeometry x="40" y="140" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="reflect" value="Self-Reflection Agent" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="be_box">
+          <mxGeometry x="40" y="190" width="160" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Database -->
+        <mxCell id="db_box" value="Database" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="640" y="40" width="200" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="postgres" value="PostgreSQL" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="db_box">
+          <mxGeometry x="40" y="40" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="pgvector" value="pgvector / BM25" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="db_box">
+          <mxGeometry x="20" y="110" width="160" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- RAG Ingestion Layer -->
+        <mxCell id="ingest_box" value="Advanced RAG Ingestion" style="swimlane;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="40" y="320" width="800" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="md_parse" value="Markdown Parser" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="ingest_box">
+          <mxGeometry x="40" y="60" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="small2big" value="Small2Big Chunker&lt;br&gt;(Child/Parent IDs)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="ingest_box">
+          <mxGeometry x="220" y="60" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="hybrid" value="Hybrid Search Service&lt;br&gt;(Vector + Keyword)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="ingest_box">
+          <mxGeometry x="400" y="60" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="rerank" value="Cross-Encoder&lt;br&gt;Reranker" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="ingest_box">
+          <mxGeometry x="600" y="60" width="160" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Edges -->
+        <mxCell id="edge_fe_be" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="leptos" target="axum">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_be_db" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="sqlx" target="postgres">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_ingest_db" value="Populate Index" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="ingest_box" target="postgres">
+          <mxGeometry x="-0.1667" y="20" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,112 @@
+<mxfile host="app.diagrams.net" modified="2026-02-18T16:00:00.000Z" agent="Antigravity AI" version="21.1.2">
+  <diagram id="RAG_Dataflow" name="RAG Dataflow &amp; Feedback Loop">
+    <mxGraphModel dx="1293" dy="728" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Ingestion Flow -->
+        <mxCell id="ingest_group" value="A. Data Ingestion Flow" style="swimlane;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="720" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="src_docs" value="Source Docs&lt;br&gt;(Markdown/PDF)" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;" vertex="1" parent="ingest_group">
+          <mxGeometry x="20" y="40" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="parse_step" value="Structure-aware&lt;br&gt;Parsing" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="ingest_group">
+          <mxGeometry x="160" y="50" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="small2big_step" value="Small2Big&lt;br&gt;Chunking" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="ingest_group">
+          <mxGeometry x="320" y="50" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="embed_step" value="Embedding&lt;br&gt;(Vectorization)" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="ingest_group">
+          <mxGeometry x="480" y="50" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="index_db" value="Vector Store&lt;br&gt;(PostgreSQL)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="ingest_group">
+          <mxGeometry x="620" y="35" width="80" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="e_ingest1" edge="1" parent="ingest_group" source="src_docs" target="parse_step"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e_ingest2" edge="1" parent="ingest_group" source="parse_step" target="small2big_step"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e_ingest3" edge="1" parent="ingest_group" source="small2big_step" target="embed_step"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e_ingest4" edge="1" parent="ingest_group" source="embed_step" target="index_db"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <!-- Retrieval Flow -->
+        <mxCell id="retrieval_group" value="B. Query &amp;amp; Retrieval Flow" style="swimlane;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="40" y="200" width="720" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="query_in" value="User Query" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="retrieval_group">
+          <mxGeometry x="20" y="50" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="rewrite_step" value="Query Re-writer&lt;br&gt;/ HyDE" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="retrieval_group">
+          <mxGeometry x="160" y="50" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hybrid_step" value="Hybrid Search&lt;br&gt;(Vector + BM25)" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="retrieval_group">
+          <mxGeometry x="320" y="30" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="rerank_step" value="Cross-Encoder&lt;br&gt;Reranking" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="retrieval_group">
+          <mxGeometry x="480" y="50" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="context_out" value="Context" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="retrieval_group">
+          <mxGeometry x="640" y="50" width="60" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="e_ret1" edge="1" parent="retrieval_group" source="query_in" target="rewrite_step"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e_ret2" edge="1" parent="retrieval_group" source="rewrite_step" target="hybrid_step"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e_ret3" edge="1" parent="retrieval_group" source="hybrid_step" target="rerank_step"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e_ret4" edge="1" parent="retrieval_group" source="rerank_step" target="context_out"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e_db_link" value="Fetch" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;" edge="1" parent="1" source="index_db" target="hybrid_step">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="700" y="110" as="sourcePoint" />
+            <mxPoint x="400" y="240" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="700" y="180" />
+              <mxPoint x="400" y="180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Generation & Feedback -->
+        <mxCell id="gen_group" value="C. Generation &amp;amp; Self-Improving Loop" style="swimlane;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="40" y="380" width="720" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="llm_gen" value="LLM Generation&lt;br&gt;(Rig Agent)" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="gen_group">
+          <mxGeometry x="160" y="40" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="reflect" value="Self-Reflection&lt;br&gt;(IsRel / IsSup)" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="gen_group">
+          <mxGeometry x="320" y="20" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ans_out" value="Final Answer" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="gen_group">
+          <mxGeometry x="480" y="40" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="feedback_db" value="Feedback DB&lt;br&gt;(Logs &amp; Scores)" style="shape=cylinder3;whiteSpace=wrap;html=1;" vertex="1" parent="gen_group">
+          <mxGeometry x="500" y="100" width="60" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="ragas_eval" value="RAGAS Auto-Eval&lt;br&gt;(Offline Loop)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="gen_group">
+          <mxGeometry x="160" y="110" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="e_gen1" edge="1" parent="gen_group" source="llm_gen" target="reflect"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e_gen2" value="Success" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="gen_group" source="reflect" target="ans_out"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e_gen3" value="Retry" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="reflect" target="rewrite_step">
+          <mxGeometry x="0.8427" y="10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="400" y="360" />
+              <mxPoint x="260" y="360" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_log" value="Log data" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="gen_group" source="ans_out" target="feedback_db"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e_eval_in" value="Analyze" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="gen_group" source="feedback_db" target="ragas_eval"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e_tuning" value="Tune Chunks / Prompts" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;curved=1;" edge="1" parent="1" source="ragas_eval" target="ingest_group">
+          <mxGeometry x="-0.7853" y="-10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="260" y="580" />
+              <mxPoint x="820" y="580" />
+              <mxPoint x="820" y="180" />
+              <mxPoint x="400" y="180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
